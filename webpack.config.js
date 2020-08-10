@@ -3,6 +3,7 @@ const path = require('path')
 module.exports = {
     entry: './src/EventEmitter.js',
     output: {
+        libraryTarget: 'commonjs2',
         path: path.resolve(__dirname, 'dist'),
         filename: 'EventEmitter.bundle.js'
     },
@@ -17,6 +18,6 @@ module.exports = {
         ]
     },
     optimization: {
-        minimize: false
-    },
+        minimize: true
+    }
 }
