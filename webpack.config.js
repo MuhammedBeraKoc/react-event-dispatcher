@@ -1,13 +1,15 @@
 const path = require('path')
 
 module.exports = {
-    entry: './src/EventEmitter.js',
+    mode: "production",
+    entry: './src/index.js',
     output: {
-        libraryTarget: 'commonjs2',
         path: path.resolve(__dirname, 'dist'),
-        filename: 'EventEmitter.bundle.js'
+        filename: 'event-emitter.js',
+        libraryTarget: 'umd',
+        library: 'EventEmitter',
+        globalObject: "this"
     },
-    mode: 'production',
     module: {
         rules: [
             {

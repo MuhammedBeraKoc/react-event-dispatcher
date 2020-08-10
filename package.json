@@ -1,11 +1,13 @@
 {
   "name": "react-event-dispatcher",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A minimal library for React to dispatch events",
-  "main": "dist/EventEmitter.bundle.js",
+  "main": "dist/event-emitter.js",
   "scripts": {
+    "publish": "npm publish",
     "test": "jest --verbose",
     "flow": "flow",
+    "prepublishOnly": "webpack --mode=production",
     "build": "webpack"
   },
   "repository": {
@@ -29,12 +31,12 @@
   "homepage": "https://github.com/MuhammedBeraKoc/react-event-emitter#readme",
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.11.1",
-    "@babel/preset-env": "^7.11.0",
-    "@babel/preset-flow": "^7.10.4",
-    "babel-jest": "^26.2.2",
-    "babel-loader": "^8.1.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-add-module-exports": "^1.0.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
     "flow-bin": "^0.131.0",
     "jest": "^26.2.2",
     "webpack": "^4.44.1",

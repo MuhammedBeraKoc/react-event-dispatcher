@@ -1,6 +1,5 @@
 // @flow
 class EventEmitter {
-
     /**
      * A static variable for storing events
      * It is shared across all components
@@ -91,6 +90,4 @@ class EventEmitter {
 }
 
 const eventEmitter = new EventEmitter()
-Object.freeze(eventEmitter)
-
 export default eventEmitter
