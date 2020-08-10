@@ -1,6 +1,6 @@
 {
   "name": "react-event-dispatcher",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A minimal library for React to dispatch events",
   "main": "src/EventEmitter.js",
   "scripts": {
