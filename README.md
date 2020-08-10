@@ -34,7 +34,7 @@ EventEmitter.triggerOne('RandomComponent')
 ### Motivation
 I have been working on quite a lot in React lately. And one of the proplems I had encountered a lot is event propagation between miscellaneous components. At some point it had been so cumbersome that I have left some of the projects that I have been dedicated for. So I wrote this minimal yet efficient library for React.
 
-## Architecture
+### Architecture
 In its core the library uses a singleton Proxy pattern to achieve most of its work. The basic mechanism of library is given below:
 
 <img src="event-emitter-architecture-schema.png">
