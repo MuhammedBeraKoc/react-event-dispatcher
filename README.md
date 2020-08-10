@@ -23,11 +23,6 @@ In your React file you have to import it in ES6 syntax:
 import EventEmitter from 'react-event-dispatcher'
 ```
 
-Or for CommonJS:
-
-``` js
-const EventEmitter = require('react-event-dispatcher').default
-```
 Now you have full access to the library. Cheers! Let's try it with a basic example:
 ``` js
 const eventToDispatch = () => console.log('It really works 👌')
