@@ -1,6 +1,6 @@
 {
   "name": "react-event-dispatcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A minimal library for React to dispatch events",
   "main": "src/EventEmitter.js",
   "scripts": {
@@ -12,7 +12,11 @@
     "type": "git",
     "url": "git+https://github.com/MuhammedBeraKoc/react-event-emitter.git"
   },
-  "keywords": ["event", "react", "dispatcher"],
+  "keywords": [
+    "event",
+    "react",
+    "dispatcher"
+  ],
   "author": {
     "name": "Muhammed Bera Koc",
     "email": "berakoc97@gmail.com",
