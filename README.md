@@ -10,10 +10,10 @@
 - **Fully Documented**: It is well-documented and contains type notations with [Flow](https://flow.org/).
 
 ## How to install? 🚀
-Since the package is in npm you can use command below to add it your project packages:
+Since the package is in npm you can use command below to add it to your project packages:
 
 ``` bash
-npm i -D react-event-dispatcher
+npm i react-event-dispatcher
 ```
 
 ## How to use? 📦
@@ -53,7 +53,7 @@ Gets the function with the given key and index. Default index value is 0. When i
 Gets the function set with the given key. It behaves the same as getOne when an error occurs (when key is not found in map).
 
 ### ***triggerOne***(key: *string*, index: *number*, ...args: *any[]*): *void*
-Nearly the same of getOne. The only difference is it runs the function instead of returning it. It takes a extra argument as args which parameters to be injected in the target function. Index has no default value.
+Nearly the same of getOne. The only difference is it runs the function instead of returning it. It takes a extra argument as args which parameters to be injected in the target function.
 
 ### ***triggerAll***(key: *string*, argsSet: *any[][]*): *void*
 Same as triggerOne. However instead of running one function it runs a function set with the given argument set.
