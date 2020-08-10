@@ -39,6 +39,8 @@ In its core the library uses a singleton Proxy pattern to achieve most of its wo
 
 <img src="event-emitter-architecture-schema.png">
 
+</br></br>
+
 ## API 🗄️
 ### ***emit***(key: *string*, $functionSet: *Function[]*): *void*
 Dispatches the given function set to the event map(__$)
