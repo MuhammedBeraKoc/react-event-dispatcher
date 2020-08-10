@@ -20,7 +20,13 @@ npm i -D react-event-dispatcher
 In your React file you have to import it in ES6 syntax:
 
 ``` js
-import EventEmitter from 'react-event-emitter'
+import EventEmitter from 'react-event-dispatcher'
+```
+
+Or for CommonJS:
+
+``` js
+const EventEmitter = require('react-event-dispatcher').default
 ```
 Now you have full access to the library. Cheers! Let's try it with a basic example:
 ``` js
