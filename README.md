@@ -54,11 +54,11 @@ Gets the function with the given key and index. Default index value is 0. When i
 ### ***getAll***(key: *string*): *Function[]*
 Gets the function set with the given key. It behaves the same as getOne when an error occurs (when key is not found in map).
 
-### ***triggerOne***(key: *string*, index: *number*, ...args: *any[]*): *void*
-Nearly the same of getOne. The only difference is it runs the function instead of returning it. It takes a extra argument as args which parameters to be injected in the target function.
+### ***triggerOne***(key: *string*, index: *number*, ...args: *any[]*): *any*
+Nearly the same of getOne. The only difference is it runs the function instead of returning it. It takes a extra argument as args which parameters to be injected in the target function. Returns the return value of the function.
 
-### ***triggerAll***(key: *string*, argsSet: *any[][]*): *void*
-Same as triggerOne. However instead of running one function it runs a function set with the given argument set.
+### ***triggerAll***(key: *string*, argsSet: *any[][]*): *any[]*
+Same as triggerOne. However instead of running one function it runs a function set with the given argument set. Returns the value set of run functions.
 
 ### ***clear***(): *void*
 Clears the event map __$.
