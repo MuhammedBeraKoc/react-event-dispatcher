@@ -4,6 +4,8 @@
 	<br>
 </div>
 
+# [Live Demo](https://codesandbox.io/s/crazy-mahavira-miooz?file=/package.json)
+
 ## What this library offers?
 - **Minimal**: It is a tiny yet crucial library for creating React apps in a much more faster and safer way.
 - **Pure Abstraction**: It is so abstract that it doesn't even depend on react module. That means you can use it in any script too.

@@ -5,10 +5,10 @@ module.exports = {
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'event-emitter.js',
-        libraryTarget: 'umd',
-        library: 'EventEmitter',
-        globalObject: "this"
+        filename: 'event-dispatcher.js',
+        libraryTarget: 'commonjs2',
+        libraryExport: 'default',
+        library: 'EventDispatcher'
     },
     module: {
         rules: [
