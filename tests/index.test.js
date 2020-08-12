@@ -41,6 +41,14 @@ describe('EventDispatcher Test Suite', () => {
         const f = () => 'I will be erased soon.'
         EventDispatcher.dispatch(key, f)
         EventDispatcher.clear()
-        expect(EventDispatcher.getOne(key)).toThrow('Key has not been found')
+        expect(EventDispatcher.getOne(key)).toThrow(EventDispatcher.KeyNotFoundError)
+    })
+
+    it('should remove the key from the key map', () => {
+        const key = generateKey()
+        const f = () => 'This shan\'t be invoked.'
+        EventDispatcher.dispatch(key, f)
+        EventDispatcher.deleteKey(key)
+        expect(EventDispatcher.getOne(key)).toThrow(EventDispatcher.KeyNotFoundError)
     })
 })

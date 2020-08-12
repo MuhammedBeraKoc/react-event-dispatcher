@@ -1,4 +1,5 @@
 // @flow
+
 class EventDispatcher {
     /**
      * A static variable for storing events
@@ -7,6 +8,15 @@ class EventDispatcher {
      * So this variable is private
      */
     static __$: Map<string, Function[]> = new Map()
+
+    constructor() {
+        this.KeyNotFoundError = class extends Error {
+            constructor(message: string) {
+                super(message)
+                this.name = 'KeyNotFoundError'
+            }
+        }
+    }
 
     /**
      * Dispatches the given function set to the __$.
@@ -31,7 +41,7 @@ class EventDispatcher {
             return EventDispatcher.__$.get(key)[index]
         } else {
             return () => {
-                throw new Error('Key has not been found')
+                throw new this.KeyNotFoundError('Key has not been found.')
             }
         }
     }
@@ -47,7 +57,7 @@ class EventDispatcher {
             return EventDispatcher.__$.get(key)
         } else {
             return () => {
-                throw new Error('Key has not been found')
+                throw new this.KeyNotFoundError('Key has not been found.')
             }
         }
     }
@@ -76,6 +86,17 @@ class EventDispatcher {
             returnValues.push(functionSet[i](...argsSet[i]))
         }
         return returnValues
+    }
+
+    /**
+     * Removes the given key from key map.
+     * Warning: This method is meant to be used only in componentWillUnmount
+     * @param {string} key The string representation of the components name
+     */
+    deleteKey(key: string) {
+        if (!EventDispatcher.__$.delete(key)) {
+            throw new this.KeyNotFoundError('Key has not been found.')
+        }
     }
 
     /**
