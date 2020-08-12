@@ -10,7 +10,7 @@
 Version | Features
 ------------ | -------------
 1.7.2 | - First stable version ✔ <br> - Changed babel packages to @babel<br> - Renamed the main class as EventDispatcher<br> - ```emit``` method replaced by ```dispatch```<br> - Implemented unit tests for current methods via [Jest](https://jestjs.io/)<br> - Added a live demo to the CodeSandbox
-1.7.3 | - ```KeyNotFoundError``` error added to the ```EventDispatcher```<br> - ```deleteKey``` method added to the library
+1.7.4 | - ```KeyNotFoundError``` error added to the ```EventDispatcher```<br> - ```deleteKey``` method added to the library
 
 <br>
 ## What this library offers?
