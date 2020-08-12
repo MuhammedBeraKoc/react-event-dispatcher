@@ -1,9 +1,10 @@
 {
   "name": "react-event-dispatcher",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "A minimal library for React to dispatch events",
   "main": "dist/event-dispatcher.js",
   "scripts": {
+    "proto": "node prototype/prototype.js",
     "test": "jest --verbose",
     "flow": "flow",
     "clean": "del-cli \"dist/*\"",

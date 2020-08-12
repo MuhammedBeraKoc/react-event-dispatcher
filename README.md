@@ -9,17 +9,19 @@
 ## What's New?
 Version | Features
 ------------ | -------------
-1.7.2 | - First stable version ✔ <br> - Changed babel packages to @babel<br> - Renamed the main class as EventDispatcher<br> - ```emit``` method replaced by ```dispatch```<br> - Implemented unit tests for current methods via [Jest](https://jestjs.io/)<br> - Added a live demo to the CodeSandbox
-1.7.4 | - ```KeyNotFoundError``` error added to the ```EventDispatcher```<br> - ```deleteKey``` method added to the library
+1.7.2 | - First stable version ✔ <br> - Changed babel packages to @babel<br> - Renamed the main class as `EventDispatcher`<br> - `emit` method replaced by `dispatch`<br> - Implemented unit tests for current methods via [Jest](https://jestjs.io/)<br> - Added a live demo to the CodeSandbox
+1.7.4 | - `KeyNotFoundError` error added to the `EventDispatcher`<br> - `deleteKey` method added to the library
+1.7.5 | - `print` method added to the library<br> - Reimplemented the library methods to remove subtle typing errors
 
 <br>
+
 ## What this library offers?
 - **Minimal**: It is a tiny yet crucial library for creating React apps in a much more faster and safer way.
 - **Pure Abstraction**: It is so abstract that it doesn't even depend on react module. That means you can use it in any script too.
 - **Fully Documented**: It is well-documented and contains type notations with [Flow](https://flow.org/).
 
 ## How to install? 🚀
-Since the package is in npm you can use command below to add it to your project packages:
+Since the package is in npm you can use the command below to add it to your project packages:
 
 ``` bash
 npm i react-event-dispatcher
@@ -42,7 +44,7 @@ EventEmitter.triggerOne('RandomComponent')
 
 ## Motivation and Architecture
 ### Motivation
-I have been working on quite a lot in React lately. And one of the proplems I had encountered a lot is event propagation between miscellaneous components. At some point it had been so cumbersome that I have left some of the projects that I have been dedicated for. So I wrote this minimal yet efficient library for React.
+I have been working on React quite lately. And one of the problems I had encountered a lot is event propagation between miscellaneous components. At some point it had been so cumbersome that I had to left some of the projects that I have been dedicated for. So I wrote this minimal yet efficient library for React.
 
 ### Architecture
 In its core the library uses a singleton Proxy pattern to achieve most of its work. The basic mechanism of library is given below:
@@ -58,7 +60,7 @@ Dispatches the given function set to the event map(__$)
 ### ***getOne***(key: *string*, index: *number*): *Function*
 Gets the function with the given key and index. Default index value is 0. When it fails to find the function (either key is absent or index is larger than the function set) it returns a function which throws an error and prints the error to the console.
 
-### ***getAll***(key: *string*): *Function[]*
+### ***getAll***(key: *string*): *Function[] | Function*
 Gets the function set with the given key. It behaves the same as getOne when an error occurs (when key is not found in map).
 
 ### ***triggerOne***(key: *string*, index: *number*, ...args: *any[]*): *any*
@@ -68,7 +70,10 @@ Nearly the same of getOne. The only difference is it runs the function instead o
 Same as triggerOne. However instead of running one function it runs a function set with the given argument set. Returns the value set of run functions.
 
 ### ***deleteKey***(key: *string*): *void*
-Deletes the given key from key map. Only recommended to be used in ```componentWillUnmount```.
+Deletes the given key from key map. Only recommended to be used in `componentWillUnmount`.
+
+### ***print***(isTest: *boolean*): *void | string*
+If isTest is false, prints the __$ as a visual tree. Otherwise it returns the output string for unit testing.
 
 ### ***clear***(): *void*
 Clears the event map __$.

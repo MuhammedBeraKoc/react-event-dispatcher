@@ -143,6 +143,8 @@ var EventDispatcher = /*#__PURE__*/function () {
   function EventDispatcher() {
     _classCallCheck(this, EventDispatcher);
 
+    _defineProperty(this, "KeyNotFoundError", void 0);
+
     this.KeyNotFoundError = /*#__PURE__*/function (_Error) {
       _inherits(_class, _Error);
 
@@ -164,7 +166,7 @@ var EventDispatcher = /*#__PURE__*/function () {
   /**
    * Dispatches the given function set to the __$.
    * @param {string} key The string representation of the components name
-   * @param {Function[]} $functionSet A set of functions which is to be dispatched
+   * @param {Function[]} functionSet A set of functions which is to be dispatched
    * @return {void}
    */
 
@@ -172,11 +174,13 @@ var EventDispatcher = /*#__PURE__*/function () {
   _createClass(EventDispatcher, [{
     key: "dispatch",
     value: function dispatch(key) {
-      for (var _len = arguments.length, $functionSet = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        $functionSet[_key - 1] = arguments[_key];
+      var currentFunctionSet = EventDispatcher.__$.get(key);
+
+      for (var _len = arguments.length, functionSet = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        functionSet[_key - 1] = arguments[_key];
       }
 
-      if (!EventDispatcher.__$.set(key, EventDispatcher.__$.get(key) ? EventDispatcher.__$.get(key).concat($functionSet) : [].concat($functionSet))) throw new Error('Cannot add the new function set to the EventDispatcher.');
+      if (!EventDispatcher.__$.set(key, currentFunctionSet ? currentFunctionSet.concat(functionSet) : [].concat(functionSet))) throw new Error('Cannot add the new function set to the EventDispatcher.');
     }
     /**
      * Gets a function with the given key an index.
@@ -193,13 +197,13 @@ var EventDispatcher = /*#__PURE__*/function () {
 
       var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-      if (EventDispatcher.__$.has(key)) {
-        return EventDispatcher.__$.get(key)[index];
-      } else {
-        return function () {
-          throw new _this2.KeyNotFoundError('Key has not been found.');
-        };
-      }
+      var errorFunction = function errorFunction() {
+        throw new _this2.KeyNotFoundError('Key has not been found.');
+      };
+
+      var functionSet = EventDispatcher.__$.get(key);
+
+      return functionSet ? functionSet[index] : errorFunction;
     }
     /**
      * Gets the function set of the given key.
@@ -213,25 +217,27 @@ var EventDispatcher = /*#__PURE__*/function () {
     value: function getAll(key) {
       var _this3 = this;
 
-      if (EventDispatcher.__$.has(key)) {
-        return EventDispatcher.__$.get(key);
-      } else {
-        return function () {
-          throw new _this3.KeyNotFoundError('Key has not been found.');
-        };
-      }
+      var errorFunction = function errorFunction() {
+        throw new _this3.KeyNotFoundError('Key has not been found.');
+      };
+
+      var functionSet = EventDispatcher.__$.get(key);
+
+      return functionSet ? functionSet : errorFunction;
     }
     /**
      * Instead of getOne, runs the function with given key and index.
      * @param {string} key The string representation of the components name
      * @param {number} index The index of the function to be executed
      * @param {any[]} args The arguments to be injected in the target function as parameters
-     * @return {void}
+     * @return {any} Returns the return value of the executed function
      */
 
   }, {
     key: "triggerOne",
-    value: function triggerOne(key, index) {
+    value: function triggerOne(key) {
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
       for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
         args[_key2 - 2] = arguments[_key2];
       }
@@ -242,7 +248,7 @@ var EventDispatcher = /*#__PURE__*/function () {
      * Instead of getAll, runs the function set with given key.
      * @param {string} key The string representation of the components name
      * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
-     * @return {void}
+     * @return {any[]} Returns the return value set of the executed function set
      */
 
   }, {
@@ -269,6 +275,37 @@ var EventDispatcher = /*#__PURE__*/function () {
       if (!EventDispatcher.__$["delete"](key)) {
         throw new this.KeyNotFoundError('Key has not been found.');
       }
+    }
+    /**
+     * Prints the key map as a visual tree
+     * @param {boolean} isTest Returns the output string if it is true, otherwise prints the output to the console
+     */
+
+  }, {
+    key: "print",
+    value: function print() {
+      var isTest = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var outputString = '';
+      outputString += '*\n';
+      var keys = Array.from(EventDispatcher.__$.keys());
+
+      for (var i = 0; i < keys.length; ++i) {
+        var lineToken = i === keys.length - 1 ? ' ' : '|';
+        var keyToken = i === keys.length - 1 ? '└──' : '├──';
+        var key = keys[i];
+        var functionSet = this.getAll(key);
+        outputString += "".concat(keyToken, " ").concat(key, "\n");
+
+        for (var j = 0; j < functionSet.length; ++j) {
+          outputString += "".concat(lineToken, "   ").concat(j === functionSet.length - 1 ? '└──' : '├──', " ").concat(functionSet[j].name, "\n");
+        }
+      }
+
+      if (isTest) {
+        return outputString;
+      }
+
+      console.log(outputString);
     }
     /**
      * Clears the event map __$.
