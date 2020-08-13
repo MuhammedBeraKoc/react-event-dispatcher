@@ -9,9 +9,10 @@
 ## What's New?
 Version | Features
 ------------ | -------------
-1.7.2 | - First stable version ✔ <br> - Changed babel packages to @babel<br> - Renamed the main class as `EventDispatcher`<br> - `emit` method replaced by `dispatch`<br> - Implemented unit tests for current methods via [Jest](https://jestjs.io/)<br> - Added a live demo to the CodeSandbox
-1.7.4 | - `KeyNotFoundError` error added to the `EventDispatcher`<br> - `deleteKey` method added to the library
+1.7.6 | - `resolveOne` and `resolveAll` methods are added to the library.<br> - `triggerOne` and `triggerAll` are deprecated now. Use `runOne` and `runAll`
 1.7.5 | - `print` method added to the library<br> - Reimplemented the library methods to remove subtle typing errors
+1.7.4 | - `KeyNotFoundError` error added to the `EventDispatcher`<br> - `deleteKey` method added to the library
+1.7.2 | - First stable version ✔ <br> - Changed babel packages to @babel<br> - Renamed the main class as `EventDispatcher`<br> - `emit` method replaced by `dispatch`<br> - Implemented unit tests for current methods via [Jest](https://jestjs.io/) <br> - Added a live demo to the CodeSandbox
 
 <br>
 
@@ -61,19 +62,33 @@ Dispatches the given function set to the event map(__$)
 Gets the function with the given key and index. Default index value is 0. When it fails to find the function (either key is absent or index is larger than the function set) it returns a function which throws an error and prints the error to the console.
 
 ### ***getAll***(key: *string*): *Function[] | Function*
-Gets the function set with the given key. It behaves the same as getOne when an error occurs (when key is not found in map).
+Gets the function set with the given key. It behaves the same as `getOne` when an error occurs (when key is not found in map).
 
 ### ***triggerOne***(key: *string*, index: *number*, ...args: *any[]*): *any*
-Nearly the same of getOne. The only difference is it runs the function instead of returning it. It takes a extra argument as args which parameters to be injected in the target function. Returns the return value of the function.
+🚨 **Warning**: Deprecated. Use `runOne`.<br>
+Nearly the same of `getOne`. The only difference is it runs the function instead of returning it. It takes a extra argument as args which parameters to be injected in the target function. Returns the return value of the function.
 
 ### ***triggerAll***(key: *string*, argsSet: *any[][]*): *any[]*
-Same as triggerOne. However instead of running one function it runs a function set with the given argument set. Returns the value set of run functions.
+🚨 **Warning**: Deprecated. Use `runAll`.<br>
+Same as `triggerOne`. However instead of running one function it runs a function set with the given argument set. Returns the value set of run functions.
+
+### ***runOne***\<T\>(key: *string*, index: *number*, ...args: *any[]*): *\<T\>*
+Generic version of `triggerOne`.
+
+### ***runAll***(key: *string*, argsSet: *any[][]*): *any[]*
+Same as `triggerAll`.
+
+### ***resolveOne***\<T\>(key: *string*, index: *number*, ...args: *any[]*): *Promise\<T\>*
+Promise version of `runOne`.
+
+### ***resolveAll***\<T\>(key: *string*, argsSet: *any[][]*): *Promise<any[]>*
+Promise version of `runAll`.
 
 ### ***deleteKey***(key: *string*): *void*
 Deletes the given key from key map. Only recommended to be used in `componentWillUnmount`.
 
 ### ***print***(isTest: *boolean*): *void | string*
-If isTest is false, prints the __$ as a visual tree. Otherwise it returns the output string for unit testing.
+If `isTest` is false, prints the `__$` as a visual tree. Otherwise it returns the output string for unit testing.
 
 ### ***clear***(): *void*
-Clears the event map __$.
+Clears the event map `__$`.

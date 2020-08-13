@@ -1,6 +1,6 @@
 {
   "name": "react-event-dispatcher",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "description": "A minimal library for React to dispatch events",
   "main": "dist/event-dispatcher.js",
   "scripts": {
@@ -35,7 +35,6 @@
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-flow": "^7.10.4",
-    "@types/jest": "^26.0.9",
     "babel-loader": "^8.1.0",
     "del-cli": "^3.0.1",
     "flow-bin": "^0.131.0",

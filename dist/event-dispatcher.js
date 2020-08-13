@@ -226,11 +226,14 @@ var EventDispatcher = /*#__PURE__*/function () {
       return functionSet ? functionSet : errorFunction;
     }
     /**
-     * Instead of getOne, runs the function with given key and index.
+     * @deprecated
+     * Instead of getOne, runs the function with given key and index and args.
+     * Use runOne instead of this method since it is likely to be removed in newer versions.
+     * @template T
      * @param {string} key The string representation of the components name
      * @param {number} index The index of the function to be executed
      * @param {any[]} args The arguments to be injected in the target function as parameters
-     * @return {any} Returns the return value of the executed function
+     * @return {T|unknown} Returns the return value of the executed function
      */
 
   }, {
@@ -245,7 +248,9 @@ var EventDispatcher = /*#__PURE__*/function () {
       return this.getOne(key, index).apply(void 0, args);
     }
     /**
+     * @deprecated
      * Instead of getAll, runs the function set with given key.
+     * Use runAll instead of this method since it is likely to be removed in newer versions.
      * @param {string} key The string representation of the components name
      * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
      * @return {any[]} Returns the return value set of the executed function set
@@ -262,6 +267,88 @@ var EventDispatcher = /*#__PURE__*/function () {
       }
 
       return returnValues;
+    }
+    /**
+     * Instead of getOne, runs the function with given key and index and args.
+     * @template T
+     * @param {string} key The string representation of the components name
+     * @param {number} index The index of the function to be executed
+     * @param {any[]} args The arguments to be injected in the target function as parameters
+     * @return {T|unknown} Returns the return value of the executed function
+     */
+
+  }, {
+    key: "runOne",
+    value: function runOne(key) {
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+      for (var _len3 = arguments.length, args = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+        args[_key3 - 2] = arguments[_key3];
+      }
+
+      return this.getOne(key, index).apply(void 0, args);
+    }
+    /**
+     * Instead of getAll, runs the function set with given key and argument set.
+     * @param {string} key The string representation of the components name
+     * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
+     * @return {any[]} Returns the return value set of the executed function set
+     */
+
+  }, {
+    key: "runAll",
+    value: function runAll(key, argsSet) {
+      var functionSet = this.getAll(key);
+      var returnValues = [];
+
+      for (var i = 0; i < functionSet.length; ++i) {
+        returnValues.push(functionSet[i].apply(functionSet, _toConsumableArray(argsSet[i])));
+      }
+
+      return returnValues;
+    }
+    /**
+     * Resolves the result then returns it as a promise
+     * @template T
+     * @param key {string} The string representation of the components name
+     * @param index {number} The index of the function to be executed
+     * @param args {any[]} The arguments to be injected in the target function as parameters
+     * @return {Promise<T>|Promise<unknown>}
+     */
+
+  }, {
+    key: "resolveOne",
+    value: function resolveOne(key) {
+      var _this4 = this;
+
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+      for (var _len4 = arguments.length, args = new Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
+        args[_key4 - 2] = arguments[_key4];
+      }
+
+      return new Promise(function (resolve) {
+        resolve(_this4.runOne.apply(_this4, [key, index].concat(args)));
+      });
+    }
+    /**
+     * Resolves the result set then returns it as a promise
+     * @param key {string} The string representation of the components name
+     * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
+     * @return {Promise<any[]>|Promise<unknown>}
+     */
+
+  }, {
+    key: "resolveAll",
+    value: function resolveAll(key, argsSet) {
+      var promiseSet = [];
+      var functionSet = this.getAll(key);
+
+      for (var i = 0; i < functionSet.length; ++i) {
+        promiseSet.push(Promise.resolve(functionSet[i].apply(functionSet, _toConsumableArray(argsSet[i]))));
+      }
+
+      return Promise.all(promiseSet);
     }
     /**
      * Removes the given key from key map.
@@ -323,7 +410,7 @@ var EventDispatcher = /*#__PURE__*/function () {
 }();
 /**
  * @brief Singleton object of EventDispatcher
- * @type {EventDispatcher}
+ * @const {EventDispatcher}
  */
 
 

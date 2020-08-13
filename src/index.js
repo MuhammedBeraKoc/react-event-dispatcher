@@ -1,7 +1,7 @@
 // @flow
 
 class EventDispatcher {
-    KeyNotFoundError: Object
+    KeyNotFoundError: Class<Error>
 
     /**
      * A static variable for storing events
@@ -62,18 +62,23 @@ class EventDispatcher {
     }
 
     /**
-     * Instead of getOne, runs the function with given key and index.
+     * @deprecated
+     * Instead of getOne, runs the function with given key and index and args.
+     * Use runOne instead of this method since it is likely to be removed in newer versions.
+     * @template T
      * @param {string} key The string representation of the components name
      * @param {number} index The index of the function to be executed
      * @param {any[]} args The arguments to be injected in the target function as parameters
-     * @return {any} Returns the return value of the executed function
+     * @return {T|unknown} Returns the return value of the executed function
      */
-    triggerOne(key: string, index: number = 0, ...args: any[]): any {
+    triggerOne<T>(key: string, index: number = 0, ...args: any[]): T {
         return this.getOne(key, index)(...args)
     }
 
     /**
+     * @deprecated
      * Instead of getAll, runs the function set with given key.
+     * Use runAll instead of this method since it is likely to be removed in newer versions.
      * @param {string} key The string representation of the components name
      * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
      * @return {any[]} Returns the return value set of the executed function set
@@ -85,6 +90,62 @@ class EventDispatcher {
             returnValues.push(functionSet[i](...argsSet[i]))
         }
         return returnValues
+    }
+
+    /**
+     * Instead of getOne, runs the function with given key and index and args.
+     * @template T
+     * @param {string} key The string representation of the components name
+     * @param {number} index The index of the function to be executed
+     * @param {any[]} args The arguments to be injected in the target function as parameters
+     * @return {T|unknown} Returns the return value of the executed function
+     */
+    runOne<T>(key: string, index: number = 0, ...args: any[]): T {
+        return this.getOne(key, index)(...args)
+    }
+
+    /**
+     * Instead of getAll, runs the function set with given key and argument set.
+     * @param {string} key The string representation of the components name
+     * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
+     * @return {any[]} Returns the return value set of the executed function set
+     */
+    runAll(key: string, argsSet: any[][]): any[] {
+        const functionSet = this.getAll(key)
+        const returnValues = []
+        for (let i = 0; i < functionSet.length; ++i) {
+            returnValues.push(functionSet[i](...argsSet[i]))
+        }
+        return returnValues
+    }
+
+    /**
+     * Resolves the result then returns it as a promise
+     * @template T
+     * @param key {string} The string representation of the components name
+     * @param index {number} The index of the function to be executed
+     * @param args {any[]} The arguments to be injected in the target function as parameters
+     * @return {Promise<T>|Promise<unknown>}
+     */
+    resolveOne<T>(key: string, index: number = 0, ...args: any[]): Promise<T> {
+        return new Promise((resolve) => {
+            resolve(this.runOne<T>(key, index, ...args))
+        })
+    }
+
+    /**
+     * Resolves the result set then returns it as a promise
+     * @param key {string} The string representation of the components name
+     * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
+     * @return {Promise<any[]>|Promise<unknown>}
+     */
+    resolveAll(key: string, argsSet: any[][]): Promise<any[]> {
+        const promiseSet: Promise[] = []
+        const functionSet: Function[] = this.getAll(key)
+        for (let i = 0; i < functionSet.length; ++i) {
+            promiseSet.push(Promise.resolve(functionSet[i](...argsSet[i])))
+        }
+        return Promise.all(promiseSet)
     }
 
     /**
@@ -133,7 +194,7 @@ class EventDispatcher {
 
 /**
  * @brief Singleton object of EventDispatcher
- * @type {EventDispatcher}
+ * @const {EventDispatcher}
  */
 const eventEmitter = new EventDispatcher()
 export default eventEmitter

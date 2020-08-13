@@ -1,3 +1,5 @@
+// @flow
+
 import EventDispatcher from '../src/index'
 
 const generateKey = () => {
@@ -17,7 +19,7 @@ describe('EventDispatcher Test Suite', () => {
     it('should emit function set and get them', () => {
         const key = generateKey()
         const functionSet = [
-            (bool) => bool,
+            (bool: boolean) => bool,
             () => 'Hello World!'
         ]
         EventDispatcher.dispatch(key, ...functionSet)
@@ -26,16 +28,16 @@ describe('EventDispatcher Test Suite', () => {
         expect(EventDispatcher.getAll(key)).toStrictEqual(functionSet)
     })
 
-    it('should emit function set and trigger them', () => {
+    it('should emit function set and run them', () => {
         const key = generateKey()
         const functionSet = [
-            (name) => '@f' + name,
-            (name) => '@g' + name
+            (name: string) => '@f' + name,
+            (name: string) => '@g' + name
         ]
         EventDispatcher.dispatch(key, ...functionSet)
-        expect(EventDispatcher.triggerOne(key, 0, 'One')).toBe('@fOne')
-        expect(EventDispatcher.triggerOne(key, 1, 'Two')).toBe('@gTwo')
-        expect(EventDispatcher.triggerAll(key, [['One'], ['Two']])).toStrictEqual(['@fOne', '@gTwo'])
+        expect(EventDispatcher.runOne<string>(key, 0, 'One')).toBe('@fOne')
+        expect(EventDispatcher.runOne<string>(key, 1, 'Two')).toBe('@gTwo')
+        expect(EventDispatcher.runAll(key, [['One'], ['Two']])).toStrictEqual(['@fOne', '@gTwo'])
     })
 
     it('should clear the dispatcher', () => {
@@ -54,7 +56,7 @@ describe('EventDispatcher Test Suite', () => {
         expect(EventDispatcher.getOne(key)).toThrow(EventDispatcher.KeyNotFoundError)
     })
 
-    it('Should print key map as a visual tree', () => {
+    it('should print key map as a visual tree', () => {
         const k1 = generateKey()
         const k2 = generateKey()
         const f1 = () => '@f1'
@@ -64,5 +66,21 @@ describe('EventDispatcher Test Suite', () => {
         EventDispatcher.dispatch(k1, f1)
         EventDispatcher.dispatch(k2, f21, f22)
         expect(EventDispatcher.print(true)).toBe(`*\n├── ${k1}\n|   └── f1\n└── ${k2}\n    ├── f21\n    └── f22\n`)
+    })
+
+    it('should emit function set then resolve them', () => {
+        const key = generateKey()
+        const add = (a: number, b: number) => a + b
+        const stringToNumber = (s: string) => +s
+        EventDispatcher.dispatch(key, add, stringToNumber)
+        EventDispatcher.resolveOne(key, 0, 2, 3).then(result => {
+            expect(result).toBe(5)
+        })
+        EventDispatcher.resolveOne(key, 1, '154').then(result  => {
+            expect(result).toBe(154)
+        })
+        EventDispatcher.resolveAll(key, [[2, 3], ['154']]).then(resultSet => {
+            expect(resultSet).toStrictEqual([5, 154])
+        })
     })
 })
