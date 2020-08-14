@@ -1,14 +1,15 @@
 {
   "name": "react-event-dispatcher",
-  "version": "1.7.6",
+  "version": "1.8.0",
   "description": "A minimal library for React to dispatch events",
   "main": "dist/event-dispatcher.js",
   "scripts": {
     "proto": "node prototype/prototype.js",
     "test": "jest --verbose",
+    "test:coverage": "jest --ci --coverage && codecov -t 3a0d888f-09fa-4023-ad0e-ed58dcc44cbe",
     "flow": "flow",
     "clean": "del-cli \"dist/*\"",
-    "build": "npm test && npm run clean && webpack --mode production"
+    "build": "npm run flow && npm run test:coverage && npm run clean && webpack --mode production"
   },
   "repository": {
     "type": "git",

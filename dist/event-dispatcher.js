@@ -91,6 +91,8 @@ module.exports =
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -135,17 +137,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var EventDispatcher = /*#__PURE__*/function () {
   /**
-   * A static variable for storing events
-   * It is shared across all components
-   * Yet it is hidden from them
-   * So this variable is private
+   * @class
+   * @type {Class<Error>}
    */
-  function EventDispatcher() {
+
+  /**
+   * @brief A map for storing events by component names
+   * @type {Map<string, Function[]>}
+   * @private
+   */
+
+  /**
+   * @constructor
+   * @param name Name of the EventDispatcher
+   */
+  function EventDispatcher(name) {
     _classCallCheck(this, EventDispatcher);
 
-    _defineProperty(this, "KeyNotFoundError", void 0);
-
-    this.KeyNotFoundError = /*#__PURE__*/function (_Error) {
+    _defineProperty(this, "ComponentNotFoundError", /*#__PURE__*/function (_Error) {
       _inherits(_class, _Error);
 
       var _super = _createSuper(_class);
@@ -155,17 +164,23 @@ var EventDispatcher = /*#__PURE__*/function () {
 
         _classCallCheck(this, _class);
 
-        _this = _super.call(this, message);
-        _this.name = 'KeyNotFoundError';
+        _this = _super.call(this, message || 'Cannot find the given component name.');
+        _this.name = 'ComponentNotFoundError';
         return _this;
       }
 
       return _class;
-    }( /*#__PURE__*/_wrapNativeSuper(Error));
+    }( /*#__PURE__*/_wrapNativeSuper(Error)));
+
+    _defineProperty(this, "_componentEventMap", new Map());
+
+    _defineProperty(this, "_name", void 0);
+
+    this._name = name;
   }
   /**
    * Dispatches the given function set to the __$.
-   * @param {string} key The string representation of the components name
+   * @param {string} componentName The string representation of the components name
    * @param {Function[]} functionSet A set of functions which is to be dispatched
    * @return {void}
    */
@@ -173,105 +188,58 @@ var EventDispatcher = /*#__PURE__*/function () {
 
   _createClass(EventDispatcher, [{
     key: "dispatch",
-    value: function dispatch(key) {
-      var currentFunctionSet = EventDispatcher.__$.get(key);
+    value: function dispatch(componentName) {
+      var currentFunctionSet = this._componentEventMap.get(componentName);
 
       for (var _len = arguments.length, functionSet = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         functionSet[_key - 1] = arguments[_key];
       }
 
-      if (!EventDispatcher.__$.set(key, currentFunctionSet ? currentFunctionSet.concat(functionSet) : [].concat(functionSet))) throw new Error('Cannot add the new function set to the EventDispatcher.');
+      this._componentEventMap.set(componentName, currentFunctionSet ? currentFunctionSet.concat(functionSet) : [].concat(functionSet));
     }
     /**
-     * Gets a function with the given key an index.
+     * Gets a function with the given componentName an index.
      * When failed returns a function which throws an error.
-     * @param {string} key The string representation of the components name
+     * @param {string} componentName The string representation of the components name
      * @param {number} index The index of the function to be got
-     * @return {Function} The function with the given index and key
+     * @return {Function} The function with the given index and componentName
      */
 
   }, {
     key: "getOne",
-    value: function getOne(key) {
+    value: function getOne(componentName) {
       var _this2 = this;
 
       var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-      var errorFunction = function errorFunction() {
-        throw new _this2.KeyNotFoundError('Key has not been found.');
+      var functionSet = this._componentEventMap.get(componentName);
+
+      return functionSet ? functionSet[index] : function () {
+        throw new _this2.ComponentNotFoundError();
       };
-
-      var functionSet = EventDispatcher.__$.get(key);
-
-      return functionSet ? functionSet[index] : errorFunction;
     }
     /**
-     * Gets the function set of the given key.
+     * Gets the function set of the given componentName.
      * When failed returns a function which throws an error.
-     * @param {string} key The string representation of the components name
-     * @return {Function[] | Function} Function set for the given key
+     * @param {string} componentName The string representation of the components name
+     * @return {Function[] | Function} Function set for the given componentName
      */
 
   }, {
     key: "getAll",
-    value: function getAll(key) {
+    value: function getAll(componentName) {
       var _this3 = this;
 
-      var errorFunction = function errorFunction() {
-        throw new _this3.KeyNotFoundError('Key has not been found.');
+      var functionSet = this._componentEventMap.get(componentName);
+
+      return functionSet ? functionSet : function () {
+        throw new _this3.ComponentNotFoundError();
       };
-
-      var functionSet = EventDispatcher.__$.get(key);
-
-      return functionSet ? functionSet : errorFunction;
     }
     /**
-     * @deprecated
-     * Instead of getOne, runs the function with given key and index and args.
-     * Use runOne instead of this method since it is likely to be removed in newer versions.
+     * Instead of getOne, runs the function with given componentName and index and args.
      * @template T
-     * @param {string} key The string representation of the components name
-     * @param {number} index The index of the function to be executed
-     * @param {any[]} args The arguments to be injected in the target function as parameters
-     * @return {T|unknown} Returns the return value of the executed function
-     */
-
-  }, {
-    key: "triggerOne",
-    value: function triggerOne(key) {
-      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-      for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-        args[_key2 - 2] = arguments[_key2];
-      }
-
-      return this.getOne(key, index).apply(void 0, args);
-    }
-    /**
-     * @deprecated
-     * Instead of getAll, runs the function set with given key.
-     * Use runAll instead of this method since it is likely to be removed in newer versions.
-     * @param {string} key The string representation of the components name
-     * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
-     * @return {any[]} Returns the return value set of the executed function set
-     */
-
-  }, {
-    key: "triggerAll",
-    value: function triggerAll(key, argsSet) {
-      var functionSet = this.getAll(key);
-      var returnValues = [];
-
-      for (var i = 0; i < functionSet.length; ++i) {
-        returnValues.push(functionSet[i].apply(functionSet, _toConsumableArray(argsSet[i])));
-      }
-
-      return returnValues;
-    }
-    /**
-     * Instead of getOne, runs the function with given key and index and args.
-     * @template T
-     * @param {string} key The string representation of the components name
+     * @param {string} componentName The string representation of the components name
      * @param {number} index The index of the function to be executed
      * @param {any[]} args The arguments to be injected in the target function as parameters
      * @return {T|unknown} Returns the return value of the executed function
@@ -279,26 +247,26 @@ var EventDispatcher = /*#__PURE__*/function () {
 
   }, {
     key: "runOne",
-    value: function runOne(key) {
+    value: function runOne(componentName) {
       var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-      for (var _len3 = arguments.length, args = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
-        args[_key3 - 2] = arguments[_key3];
+      for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
       }
 
-      return this.getOne(key, index).apply(void 0, args);
+      return this.getOne(componentName, index).apply(void 0, args);
     }
     /**
-     * Instead of getAll, runs the function set with given key and argument set.
-     * @param {string} key The string representation of the components name
+     * Instead of getAll, runs the function set with given componentName and argument set.
+     * @param {string} componentName The string representation of the components name
      * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
      * @return {any[]} Returns the return value set of the executed function set
      */
 
   }, {
     key: "runAll",
-    value: function runAll(key, argsSet) {
-      var functionSet = this.getAll(key);
+    value: function runAll(componentName, argsSet) {
+      var functionSet = this.getAll(componentName);
       var returnValues = [];
 
       for (var i = 0; i < functionSet.length; ++i) {
@@ -310,7 +278,7 @@ var EventDispatcher = /*#__PURE__*/function () {
     /**
      * Resolves the result then returns it as a promise
      * @template T
-     * @param key {string} The string representation of the components name
+     * @param componentName {string} The string representation of the components name
      * @param index {number} The index of the function to be executed
      * @param args {any[]} The arguments to be injected in the target function as parameters
      * @return {Promise<T>|Promise<unknown>}
@@ -318,31 +286,31 @@ var EventDispatcher = /*#__PURE__*/function () {
 
   }, {
     key: "resolveOne",
-    value: function resolveOne(key) {
+    value: function resolveOne(componentName) {
       var _this4 = this;
 
       var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-      for (var _len4 = arguments.length, args = new Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
-        args[_key4 - 2] = arguments[_key4];
+      for (var _len3 = arguments.length, args = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+        args[_key3 - 2] = arguments[_key3];
       }
 
       return new Promise(function (resolve) {
-        resolve(_this4.runOne.apply(_this4, [key, index].concat(args)));
+        resolve(_this4.runOne.apply(_this4, [componentName, index].concat(args)));
       });
     }
     /**
      * Resolves the result set then returns it as a promise
-     * @param key {string} The string representation of the components name
+     * @param componentName {string} The string representation of the components name
      * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
      * @return {Promise<any[]>|Promise<unknown>}
      */
 
   }, {
     key: "resolveAll",
-    value: function resolveAll(key, argsSet) {
+    value: function resolveAll(componentName, argsSet) {
       var promiseSet = [];
-      var functionSet = this.getAll(key);
+      var functionSet = this.getAll(componentName);
 
       for (var i = 0; i < functionSet.length; ++i) {
         promiseSet.push(Promise.resolve(functionSet[i].apply(functionSet, _toConsumableArray(argsSet[i]))));
@@ -351,20 +319,25 @@ var EventDispatcher = /*#__PURE__*/function () {
       return Promise.all(promiseSet);
     }
     /**
-     * Removes the given key from key map.
+     * Removes the given componentName from componentName map.
      * Warning: This method is meant to be used only in componentWillUnmount
-     * @param {string} key The string representation of the components name
+     * @param {string} componentName The string representation of the components name
+     * @return {void|function():never} A function that throws error
      */
 
   }, {
-    key: "deleteKey",
-    value: function deleteKey(key) {
-      if (!EventDispatcher.__$["delete"](key)) {
-        throw new this.KeyNotFoundError('Key has not been found.');
+    key: "deleteComponent",
+    value: function deleteComponent(componentName) {
+      var _this5 = this;
+
+      if (!this._componentEventMap["delete"](componentName)) {
+        return function () {
+          throw new _this5.ComponentNotFoundError();
+        };
       }
     }
     /**
-     * Prints the key map as a visual tree
+     * Prints the componentName map as a visual tree
      * @param {boolean} isTest Returns the output string if it is true, otherwise prints the output to the console
      */
 
@@ -373,25 +346,22 @@ var EventDispatcher = /*#__PURE__*/function () {
     value: function print() {
       var isTest = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var outputString = '';
-      outputString += '*\n';
-      var keys = Array.from(EventDispatcher.__$.keys());
+      outputString += "".concat(this.name, "\n");
+      var componentNames = Array.from(this._componentEventMap.keys());
 
-      for (var i = 0; i < keys.length; ++i) {
-        var lineToken = i === keys.length - 1 ? ' ' : '|';
-        var keyToken = i === keys.length - 1 ? '└──' : '├──';
-        var key = keys[i];
-        var functionSet = this.getAll(key);
-        outputString += "".concat(keyToken, " ").concat(key, "\n");
+      for (var i = 0; i < componentNames.length; ++i) {
+        var lineToken = i === componentNames.length - 1 ? ' ' : '|';
+        var componentNameToken = i === componentNames.length - 1 ? '└──' : '├──';
+        var componentName = componentNames[i];
+        var functionSet = this.getAll(componentName);
+        outputString += "".concat(componentNameToken, " ").concat(componentName, "\n");
 
         for (var j = 0; j < functionSet.length; ++j) {
           outputString += "".concat(lineToken, "   ").concat(j === functionSet.length - 1 ? '└──' : '├──', " ").concat(functionSet[j].name, "\n");
         }
       }
 
-      if (isTest) {
-        return outputString;
-      }
-
+      if (isTest) return outputString;
       console.log(outputString);
     }
     /**
@@ -402,22 +372,190 @@ var EventDispatcher = /*#__PURE__*/function () {
   }, {
     key: "clear",
     value: function clear() {
-      EventDispatcher.__$.clear();
+      this._componentEventMap.clear();
+    }
+  }, {
+    key: "name",
+    get: function get() {
+      return this._name;
     }
   }]);
 
   return EventDispatcher;
 }();
 /**
- * @brief Singleton object of EventDispatcher
- * @const {EventDispatcher}
+ * A class with no ability to create instances (private constructor)
+ * and all methods
+ * @class
  */
 
 
-_defineProperty(EventDispatcher, "__$", new Map());
+var EventDispatcherFactory = /*#__PURE__*/function () {
+  function EventDispatcherFactory() {
+    _classCallCheck(this, EventDispatcherFactory);
+  }
 
-var eventEmitter = new EventDispatcher();
-/* harmony default export */ __webpack_exports__["default"] = (eventEmitter);
+  _createClass(EventDispatcherFactory, [{
+    key: "_constructor",
+
+    /**
+     * @class
+     * @type {Class<Error>}
+     */
+
+    /**
+     * @class
+     * @type {Class<Error>}
+     */
+
+    /**
+     * @brief A map for storing dispatchers by their names
+     * @type {Map<string, EventDispatcher>}
+     * @private
+     */
+
+    /**
+     * @constructor
+     * @brief A private constructor to make EventDispatcherFactory not to instantiate objects
+     */
+    value: function _constructor() {}
+    /**
+     * Creates a new dispatcher. If the dispatcher name is not unique throws DispatcherNameIsNotUniqueError
+     * @param dispatcherName The unique name for the dispatcher
+     * @return {void|function():never} A function that throws error
+     */
+
+  }], [{
+    key: "create",
+    value: function create(dispatcherName) {
+      var _this6 = this;
+
+      if (this._eventDispatcherMap.get(dispatcherName)) {
+        return function () {
+          throw new _this6.DispatcherNameIsNotUniqueError();
+        };
+      }
+
+      return this._eventDispatcherMap.set(dispatcherName, new EventDispatcher(dispatcherName)).get(dispatcherName);
+    }
+    /**
+     *
+     * @param dispatcherName The unique name for the dispatcher
+     * @template EventDispatcher
+     * @return {EventDispatcher|(function():never)}
+     */
+
+  }, {
+    key: "use",
+    value: function use(dispatcherName) {
+      var _this7 = this;
+
+      var eventDispatcher = this._eventDispatcherMap.get(dispatcherName);
+
+      return eventDispatcher ? eventDispatcher : function () {
+        throw new _this7.DispatcherNotFoundError();
+      };
+    }
+    /**
+     * Removes the dispatcher from _eventDispatcherMap.
+     * @param dispatcherName The unique name for the dispatcher
+     * @return {void|function():never}
+     */
+
+  }, {
+    key: "delete",
+    value: function _delete(dispatcherName) {
+      var _this8 = this;
+
+      if (!this._eventDispatcherMap["delete"](dispatcherName)) {
+        return function () {
+          throw new _this8.DispatcherNotFoundError();
+        };
+      }
+    }
+  }, {
+    key: "print",
+    value: function print() {
+      var isTest = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+      var outputString = "".concat('-'.repeat(32), "\n");
+
+      var _iterator = _createForOfIteratorHelper(this._eventDispatcherMap.keys()),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var eventDispatcherName = _step.value;
+
+          var eventDispatcher = this._eventDispatcherMap.get(eventDispatcherName);
+
+          if (eventDispatcher) {
+            var eventDispatcherOutput = eventDispatcher.print(true);
+            outputString += eventDispatcherOutput ? eventDispatcherOutput : 'This shall never happen.';
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      outputString += '-'.repeat(32);
+      if (isTest) return outputString;
+      console.log(outputString);
+    }
+    /**
+     * Clears the _eventDispatcherMap
+     */
+
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._eventDispatcherMap.clear();
+    }
+  }]);
+
+  return EventDispatcherFactory;
+}();
+
+_defineProperty(EventDispatcherFactory, "DispatcherNotFoundError", /*#__PURE__*/function (_Error2) {
+  _inherits(_class2, _Error2);
+
+  var _super2 = _createSuper(_class2);
+
+  function _class2(message) {
+    var _this9;
+
+    _classCallCheck(this, _class2);
+
+    _this9 = _super2.call(this, message || 'Cannot find the given dispatcher name.');
+    _this9.name = 'DispatcherNotFoundError';
+    return _this9;
+  }
+
+  return _class2;
+}( /*#__PURE__*/_wrapNativeSuper(Error)));
+
+_defineProperty(EventDispatcherFactory, "DispatcherNameIsNotUniqueError", /*#__PURE__*/function (_Error3) {
+  _inherits(_class3, _Error3);
+
+  var _super3 = _createSuper(_class3);
+
+  function _class3(message) {
+    var _this10;
+
+    _classCallCheck(this, _class3);
+
+    _this10 = _super3.call(this, message || 'Given dispatcher name is not unique.');
+    _this10.name = 'DispatcherNameIsNotUniqueError';
+    return _this10;
+  }
+
+  return _class3;
+}( /*#__PURE__*/_wrapNativeSuper(Error)));
+
+_defineProperty(EventDispatcherFactory, "_eventDispatcherMap", new Map());
+
+/* harmony default export */ __webpack_exports__["default"] = (EventDispatcherFactory);
 
 /***/ })
 /******/ ])["default"];
