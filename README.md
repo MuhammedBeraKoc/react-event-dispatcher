@@ -55,7 +55,7 @@ EventDispatcher.runOne('RandomComponent')
 I have been working on React quite lately. And one of the problems I had encountered a lot is event propagation between miscellaneous components. At some point it had been so cumbersome that I had to left some of the projects that I have been dedicated for. So I wrote this minimal yet efficient library for React.
 
 ### Architecture
-Since `1.8.0` main architecture has been changed. The architecture schema is like below:
+Since version `1.8.0`, the main architecture has been changed drastically. The architecture schema is like below:
 
 <img src="react-event-dispatcher-architecture-schema.png">
 
@@ -72,7 +72,7 @@ Dispatches the given function set to the event map(__$)
 Gets the function with the given componentName and index. Default index value is 0. When it fails to find the function (either componentName is absent or index is larger than the function set) it returns a function which throws `ComponentNotFoundError` and prints the error to the console.
 
 ### ***getAll***(componentName: *string*): *Function[] | Function*
-Gets the function set with the given componentName. It behaves the same as `getOne` when ``componentName` is not found.
+Gets the function set with the given componentName. It behaves the same as `getOne` when `componentName` is not found.
 
 ### ***triggerOne***(componentName: *string*, index: *number*, ...args: *any[]*): *any*
 🚨 **Warning**: Deprecated. Use `runOne`.<br>

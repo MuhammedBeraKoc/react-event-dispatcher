@@ -6,4 +6,3 @@ node_js:
 script:
   - npm run flow
   - npm test
-  - npm run build

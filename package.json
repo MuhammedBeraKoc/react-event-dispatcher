@@ -11,6 +11,10 @@
     "clean": "del-cli \"dist/*\"",
     "build": "npm run flow && npm run test:coverage && npm run clean && webpack --mode production"
   },
+  "bin": {
+    "root": "bin/changeRoot.js",
+    "-r": "bin/changeRoot.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MuhammedBeraKoc/react-event-emitter.git"
@@ -40,6 +44,7 @@
     "del-cli": "^3.0.1",
     "flow-bin": "^0.131.0",
     "jest": "^26.2.2",
+    "shelljs": "^0.8.4",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }
