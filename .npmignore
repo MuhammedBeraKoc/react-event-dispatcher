@@ -1,0 +1,14 @@
+node_modules
+prototype
+dist
+.idea
+flow-typed
+package.json
+package-lock.json
+.travis.yml
+.gitignore
+tests
+src
+.babelrc
+.flowconfig
+webpack.config.js

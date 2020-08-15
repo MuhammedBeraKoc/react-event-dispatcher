@@ -6,7 +6,7 @@
 
 <br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![npm version](https://badge.fury.io/js/react-event-dispatcher.svg)](https://badge.fury.io/js/react-event-dispatcher) [![codecov](https://codecov.io/gh/MuhammedBeraKoc/react-event-dispatcher/branch/master/graph/badge.svg)](https://codecov.io/gh/MuhammedBeraKoc/react-event-dispatcher)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![npm version](https://badge.fury.io/js/react-event-dispatcher.svg)](https://badge.fury.io/js/react-event-dispatcher) [![codecov](https://codecov.io/gh/MuhammedBeraKoc/react-event-dispatcher/branch/master/graph/badge.svg)](https://codecov.io/gh/MuhammedBeraKoc/react-event-dispatcher) [![Build Status](https://travis-ci.org/MuhammedBeraKoc/react-event-dispatcher.svg?branch=master)](https://travis-ci.org/MuhammedBeraKoc/react-event-dispatcher)
 
 <br>
 
@@ -15,6 +15,7 @@
 ## What's New?
 Version | Features
 ------------ | -------------
+1.8.1 | - Travis CI automation is passing now.
 1.8.0 | - Main architecture has been redesigned 🌌<br> - `__$` event map removed. Instead each `EventDispatcher` uses a local `_componentEventMap`<br>- `EventDispatcherFactory` class is added. It is the default export now<br>- `name` property added to `EventDispatcher`<br>- `keyNotFoundError` changed as `componentNameNotFoundError` and `deleteKey` as `deleteComponent`<br> - [Travis CI](https://travis-ci.org/) integrated for the project
 1.7.6 | - `resolveOne` and `resolveAll` methods are added to `EventDispatcher`<br> - `triggerOne` and `triggerAll` are deprecated now. Use `runOne` and `runAll`
 1.7.5 | - `print` method added to `EventDispatcher`<br> - Reimplemented the `EventDispatcher` methods to remove subtle typing errors
@@ -26,7 +27,7 @@ Version | Features
 ## What does this library offer?
 - **Minimal**: It is a tiny yet crucial library for creating React apps in a much more faster and safer way.
 - **Pure Abstraction**: It is so abstract that it doesn't even depend on react module. That means you can use it in any script too.
-- **Fully Documented**: It is well-documented and contains type notations with [Flow](https://flow.org/).
+- **Fully Documented**: The project is well documented and has comprehensive unit tests.
 
 ## How to install? 📦
 Since the package is in npm you can use the command below to add it to your project packages:
