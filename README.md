@@ -6,7 +6,7 @@
 
 <br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![npm version](https://badge.fury.io/js/react-event-dispatcher.svg)](https://badge.fury.io/js/react-event-dispatcher) [![codecov](https://codecov.io/gh/MuhammedBeraKoc/react-event-dispatcher/branch/master/graph/badge.svg)](https://codecov.io/gh/MuhammedBeraKoc/react-event-dispatcher) [![Build Status](https://travis-ci.org/MuhammedBeraKoc/react-event-dispatcher.svg?branch=master)](https://travis-ci.org/MuhammedBeraKoc/react-event-dispatcher)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![npm version](https://badge.fury.io/js/react-event-dispatcher.svg)](https://badge.fury.io/js/react-event-dispatcher) [![codecov](https://codecov.io/gh/MuhammedBeraKoc/react-event-dispatcher/branch/master/graph/badge.svg)](https://codecov.io/gh/MuhammedBeraKoc/react-event-dispatcher) [![Build Status](https://travis-ci.org/MuhammedBeraKoc/react-event-dispatcher.svg?branch=master)](https://travis-ci.org/MuhammedBeraKoc/react-event-dispatcher) [![Join the chat at https://gitter.im/react-event-dispatcher/community](https://badges.gitter.im/react-event-dispatcher/community.svg)](https://gitter.im/react-event-dispatcher/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <br>
 
