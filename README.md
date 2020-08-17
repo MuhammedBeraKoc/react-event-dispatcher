@@ -15,7 +15,7 @@
 ## What's New?
 Version | Features
 ------------ | -------------
-1.8.2 | - Removed unnecessary files and folders<br>- Created a gitter room for the project
+1.8.3 | - Removed unnecessary files and folders<br>- Created a gitter room for the project
 1.8.1 | - Travis CI automation is passing now
 1.8.0 | - Main architecture has been redesigned 🌌<br> - `__$` event map removed. Instead each `EventDispatcher` uses a local `_componentEventMap`<br>- `EventDispatcherFactory` class is added. It is the default export now<br>- `name` property added to `EventDispatcher`<br>- `keyNotFoundError` changed as `componentNameNotFoundError` and `deleteKey` as `deleteComponent`<br> - [Travis CI](https://travis-ci.org/) integrated for the project
 1.7.6 | - `resolveOne` and `resolveAll` methods are added to `EventDispatcher`<br> - `triggerOne` and `triggerAll` are deprecated now. Use `runOne` and `runAll`
