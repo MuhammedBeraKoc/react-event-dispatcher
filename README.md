@@ -12,19 +12,6 @@
 
 # [Live Demo](https://codesandbox.io/s/crazy-mahavira-miooz?file=/package.json)
 
-## What's New?
-Version | Features
------------- | -------------
-1.8.3 | - Removed unnecessary files and folders<br>- Created a gitter room for the project
-1.8.1 | - Travis CI automation is passing now
-1.8.0 | - Main architecture has been redesigned 🌌<br> - `__$` event map removed. Instead each `EventDispatcher` uses a local `_componentEventMap`<br>- `EventDispatcherFactory` class is added. It is the default export now<br>- `name` property added to `EventDispatcher`<br>- `keyNotFoundError` changed as `componentNameNotFoundError` and `deleteKey` as `deleteComponent`<br> - [Travis CI](https://travis-ci.org/) integrated for the project
-1.7.6 | - `resolveOne` and `resolveAll` methods are added to `EventDispatcher`<br> - `triggerOne` and `triggerAll` are deprecated now. Use `runOne` and `runAll`
-1.7.5 | - `print` method added to `EventDispatcher`<br> - Reimplemented the `EventDispatcher` methods to remove subtle typing errors
-1.7.4 | - `keyNotFoundError` error added to the `EventDispatcher`<br> - `deleteKey` method added to `EventDispatcher`
-1.7.2 | - First stable version ✔ <br> - Changed babel packages to @babel<br> - Renamed the main class as `EventDispatcher`<br> - `emit` method replaced by `dispatch`<br> - Implemented unit tests for current methods via [Jest](https://jestjs.io/) <br> - Added a live demo to the CodeSandbox
-
-<br>
-
 ## What does this library offer?
 - **Minimal**: It is a tiny yet crucial library for creating React apps in a much more faster and safer way.
 - **Pure Abstraction**: It is so abstract that it doesn't even depend on react module. That means you can use it in any script too.
@@ -56,7 +43,7 @@ EventDispatcher.runOne('RandomComponent')
 
 ``` js
 // Written in Node
-const EventDispatcherFactory = require('react-event-dispacther')
+const EventDispatcherFactory = require('react-event-dispatcher')
 const myDispatcher = EventDispatcherFactory.create('MyDispatcher')
 
 class ParentComponent {
@@ -108,68 +95,3 @@ Since version `1.8.0`, the main architecture has been changed drastically. The a
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Also you can help me to improve the library by joining my [Gitter room](https://gitter.im/react-event-dispatcher/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link) and sharing your ideas about it.
-
-</br></br>
-
-# API 🗄️
-
-## EventDispatcher
-
-### ***dispatch***(componentName: *string*, $functionSet: *Function[]*): *void*
-Dispatches the given function set to `_componentEventMap`.
-
-### ***getOne***(componentName: *string*, index: *number*): *Function*
-Gets the function with the given componentName and index. Default index value is 0. When it fails to find the function (either componentName is absent or index is larger than the function set) it returns a function which throws `ComponentNotFoundError` and prints the error to the console.
-
-### ***getAll***(componentName: *string*): *Function[] | Function*
-Gets the function set with the given componentName. It behaves the same as `getOne` when `componentName` is not found.
-
-### ***triggerOne***(componentName: *string*, index: *number*, ...args: *any[]*): *any*
-🚨 **Warning**: Deprecated. Use `runOne`.<br>
-Nearly the same of `getOne`. The only difference is it runs the function instead of returning it. It takes a extra argument as args which parameters to be injected in the target function. Returns the return value of the function.
-
-### ***triggerAll***(componentName: *string*, argsSet: *any[][]*): *any[]*
-🚨 **Warning**: Deprecated. Use `runAll`.<br>
-Same as `triggerOne`. However instead of running one function it runs a function set with the given argument set. Returns the value set of run functions.
-
-### ***runOne***\<T\>(componentName: *string*, index: *number*, ...args: *any[]*): *\<T\>*
-🚨 **Warning**: Generics only supported with files using // @flow<br>
-Generic version of `triggerOne`.
-
-### ***runAll***(componentName: *string*, argsSet: *any[][]*): *any[]*
-Same as `triggerAll`.
-
-### ***resolveOne***\<T\>(componentName: *string*, index: *number*, ...args: *any[]*): *Promise\<T\>*
-Promise version of `runOne`.
-
-### ***resolveAll***(componentName: *string*, argsSet: *any[][]*): *Promise<any[]>*
-Promise version of `runAll`.
-
-### ***deletecomponentName***(componentName: *string*): *void*
-Deletes the given componentName from componentName map. Only recommended to be used in `componentWillUnmount`.
-
-### ***print***(isTest: *boolean*): *void | string*
-If `isTest` is false, prints the `__$` as a visual tree. Otherwise it returns the output string for unit testing.
-
-### ***clear***(): *void*
-Clears the event map `__$`.
-
-### ***name***(): *string*
-Gets `_name` property
-
-## EventDispatcherFactory
-
-### *static* ***create***(dispatcherName: string): *EventDispatcher | Function*
-Creates a new EventDispatcher using the `dispatcherName` then returns it. Returns and error function that throws `DispatcherNameIsNotUniqueError` if name is not unique.
-
-### *static* ***use***(dispatcherName: string): *EventDispatcher | Function*
-Returns the EventDispatcher with the given name. If name has not found in map, returns a function which throws `DispatcherNotFoundError`.
-
-### *static* ***delete***(dispatcherName: string): *void | Function*
-Removes the EventDispatcher with the given name. Return a function that throws `DispatcherNotFoundError` in case name is not in `_eventDispatcherMap`.
-
-### *static* ***print***(): *void*
-Prints `_eventDispatcherMap` as a visual tree.
-
-### *static* ***clear***(): *void*
-Clears the `_eventDispatcherMap`.

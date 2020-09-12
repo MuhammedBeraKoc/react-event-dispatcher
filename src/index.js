@@ -5,20 +5,25 @@ class EventDispatcher {
      * @class
      * @type {Class<Error>}
      */
-    ComponentNotFoundError: Class<Error> = class extends Error {
+    EventNotFoundError: Class<Error> = class extends Error {
         constructor(message: string) {
-            super(message || 'Cannot find the given component name.')
-            this.name = 'ComponentNotFoundError'
+            super(message || 'Cannot find the given event name.')
+            this.name = 'EventNotFoundError'
         }
     }
 
     /**
-     * @brief A map for storing events by component names
+     * @brief A map for storing events by their names
      * @type {Map<string, Function[]>}
      * @private
      */
-    _componentEventMap: Map<string, Function[]> = new Map()
+    _eventMap: Map<string, Function[]> = new Map()
 
+    /**
+     * @brief Name of the EventDispatcher
+     * @type {string}
+     * @private
+     */
     _name: string
 
     /**
@@ -30,63 +35,63 @@ class EventDispatcher {
     }
 
     /**
-     * Dispatches the given function set to the __$.
-     * @param {string} componentName The string representation of the components name
+     * Dispatches the given function set to the _eventMap.
+     * @param {string} eventName The string representation of the event name
      * @param {Function[]} functionSet A set of functions which is to be dispatched
      * @return {void}
      */
-    dispatch(componentName: string, ...functionSet: Function[]): void {
-        const currentFunctionSet: ?Function[] = this._componentEventMap.get(componentName)
-        this._componentEventMap.set(componentName, currentFunctionSet ? currentFunctionSet.concat(functionSet) : [...functionSet])
+    dispatch(eventName: string, ...functionSet: Function[]): void {
+        const currentFunctionSet: ?Function[] = this._eventMap.get(eventName)
+        this._eventMap.set(eventName, currentFunctionSet ? currentFunctionSet.concat(functionSet) : [...functionSet])
     }
 
     /**
-     * Gets a function with the given componentName an index.
+     * Gets a function with the given eventName an index.
      * When failed returns a function which throws an error.
-     * @param {string} componentName The string representation of the components name
+     * @param {string} eventName The string representation of the event name
      * @param {number} index The index of the function to be got
-     * @return {Function} The function with the given index and componentName
+     * @return {Function} The function with the given index and eventName
      */
-    getOne(componentName: string, index: number = 0): Function {
-        const functionSet: ?Function[] = this._componentEventMap.get(componentName)
+    getOne(eventName: string, index: number = 0): Function {
+        const functionSet: ?Function[] = this._eventMap.get(eventName)
         return functionSet ? functionSet[index] : () => {
-            throw new this.ComponentNotFoundError()
+            throw new this.EventNotFoundError()
         }
     }
 
     /**
-     * Gets the function set of the given componentName.
+     * Gets the function set of the given eventName.
      * When failed returns a function which throws an error.
-     * @param {string} componentName The string representation of the components name
-     * @return {Function[] | Function} Function set for the given componentName
+     * @param {string} eventName The string representation of the event name
+     * @return {Function[] | Function} Function set for the given eventName
      */
-    getAll(componentName: string): Function[] | Function  {
-        const functionSet: ?Function[] =  this._componentEventMap.get(componentName)
+    getAll(eventName: string): Function[] | Function  {
+        const functionSet: ?Function[] =  this._eventMap.get(eventName)
         return functionSet ? functionSet :  () => {
-            throw new this.ComponentNotFoundError()
+            throw new this.EventNotFoundError()
         }
     }
 
     /**
-     * Instead of getOne, runs the function with given componentName and index and args.
+     * Instead of getOne, runs the function with given eventName and index and args.
      * @template T
-     * @param {string} componentName The string representation of the components name
+     * @param {string} eventName The string representation of the event name
      * @param {number} index The index of the function to be executed
      * @param {any[]} args The arguments to be injected in the target function as parameters
      * @return {T|unknown} Returns the return value of the executed function
      */
-    runOne<T>(componentName: string, index: number = 0, ...args: any[]): T {
-        return this.getOne(componentName, index)(...args)
+    runOne<T>(eventName: string, index: number = 0, ...args: any[]): T {
+        return this.getOne(eventName, index)(...args)
     }
 
     /**
-     * Instead of getAll, runs the function set with given componentName and argument set.
-     * @param {string} componentName The string representation of the components name
+     * Instead of getAll, runs the function set with given eventName and argument set.
+     * @param {string} eventName The string representation of the event name
      * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
      * @return {any[]} Returns the return value set of the executed function set
      */
-    runAll(componentName: string, argsSet: any[][]): any[] {
-        const functionSet = this.getAll(componentName)
+    runAll(eventName: string, argsSet: any[][]): any[] {
+        const functionSet = this.getAll(eventName)
         const returnValues = []
         for (let i = 0; i < functionSet.length; ++i) {
             returnValues.push(functionSet[i](...argsSet[i]))
@@ -97,26 +102,26 @@ class EventDispatcher {
     /**
      * Resolves the result then returns it as a promise
      * @template T
-     * @param componentName {string} The string representation of the components name
+     * @param eventName {string} The string representation of the event name
      * @param index {number} The index of the function to be executed
      * @param args {any[]} The arguments to be injected in the target function as parameters
      * @return {Promise<T>|Promise<unknown>}
      */
-    resolveOne<T>(componentName: string, index: number = 0, ...args: any[]): Promise<T> {
+    resolveOne<T>(eventName: string, index: number = 0, ...args: any[]): Promise<T> {
         return new Promise((resolve) => {
-            resolve(this.runOne<T>(componentName, index, ...args))
+            resolve(this.runOne<T>(eventName, index, ...args))
         })
     }
 
     /**
      * Resolves the result set then returns it as a promise
-     * @param componentName {string} The string representation of the components name
+     * @param eventName {string} The string representation of the event name
      * @param {any[][]} argsSet A set of arguments to be injected in the target function set as parameters
      * @return {Promise<any[]>|Promise<unknown>}
      */
-    resolveAll(componentName: string, argsSet: any[][]): Promise<any[]> {
+    resolveAll(eventName: string, argsSet: any[][]): Promise<any[]> {
         const promiseSet: Promise<any>[] = []
-        const functionSet: Function[] = this.getAll(componentName)
+        const functionSet: Function[] = this.getAll(eventName)
         for (let i = 0; i < functionSet.length; ++i) {
             promiseSet.push(Promise.resolve(functionSet[i](...argsSet[i])))
         }
@@ -124,33 +129,33 @@ class EventDispatcher {
     }
 
     /**
-     * Removes the given componentName from componentName map.
+     * Removes the given eventName from _eventMap.
      * Warning: This method is meant to be used only in componentWillUnmount
-     * @param {string} componentName The string representation of the components name
+     * @param {string} eventName The string representation of the event name
      * @return {void|function():never} A function that throws error
      */
-    deleteComponent(componentName: string): void | Function {
-        if(!this._componentEventMap.delete(componentName)) {
+    deleteEvent(eventName: string): void | Function {
+        if(!this._eventMap.delete(eventName)) {
             return () => {
-                throw new this.ComponentNotFoundError()
+                throw new this.EventNotFoundError()
             }
         }
     }
 
     /**
-     * Prints the componentName map as a visual tree
+     * Prints the _eventMap as a visual tree
      * @param {boolean} isTest Returns the output string if it is true, otherwise prints the output to the console
      */
     print(isTest: boolean = false): void | string {
         let outputString = ''
         outputString += `${this.name}\n`
-        const componentNames = Array.from(this._componentEventMap.keys())
-        for (let i = 0; i < componentNames.length; ++i) {
-            const lineToken = i === componentNames.length - 1 ? ' ' : '|'
-            const componentNameToken = i === componentNames.length - 1 ? '└──' : '├──'
-            const componentName = componentNames[i]
-            const functionSet = this.getAll(componentName)
-            outputString += `${componentNameToken} ${componentName}\n`
+        const eventNames = Array.from(this._eventMap.keys())
+        for (let i = 0; i < eventNames.length; ++i) {
+            const lineToken = i === eventNames.length - 1 ? ' ' : '|'
+            const eventNameToken = i === eventNames.length - 1 ? '└──' : '├──'
+            const eventName = eventNames[i]
+            const functionSet = this.getAll(eventName)
+            outputString += `${eventNameToken} ${eventName}\n`
             for (let j = 0; j < functionSet.length; ++j) {
                 outputString += `${lineToken}   ${j === functionSet.length - 1 ? '└──' : '├──'} ${functionSet[j].name}\n`
             }
@@ -164,7 +169,7 @@ class EventDispatcher {
      * @return {void}
      */
     clear(): void {
-        this._componentEventMap.clear()
+        this._eventMap.clear()
     }
 
 
@@ -186,7 +191,7 @@ class EventDispatcherFactory {
     static DispatcherNotFoundError: Class<Error> = class extends Error {
         constructor(message: string) {
             super(message || 'Cannot find the given dispatcher name.')
-            this.name = 'DispatcherNotFoundError'
+            this.name = EventDispatcherFactory.DispatcherNotFoundError.name
         }
     }
 
@@ -197,7 +202,14 @@ class EventDispatcherFactory {
     static DispatcherNameIsNotUniqueError: Class<Error> = class extends Error {
         constructor(message: string) {
             super(message || 'Given dispatcher name is not unique.')
-            this.name = 'DispatcherNameIsNotUniqueError'
+            this.name = EventDispatcherFactory.DispatcherNameIsNotUniqueError.name
+        }
+    }
+
+    static CannotInstantiateClassError: Class<Error> = class extends Error {
+        constructor(message: string) {
+            super(message || 'Cannot instantiate the current class.')
+            this.name = EventDispatcherFactory.CannotInstantiateClassError.name
         }
     }
 
@@ -212,7 +224,9 @@ class EventDispatcherFactory {
      * @constructor
      * @brief A private constructor to make EventDispatcherFactory not to instantiate objects
      */
-    _constructor() {}
+    constructor() {
+        throw new EventDispatcherFactory.CannotInstantiateClassError()
+    }
 
     /**
      * Creates a new dispatcher. If the dispatcher name is not unique throws DispatcherNameIsNotUniqueError

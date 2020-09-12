@@ -42,10 +42,10 @@ describe('EventDispatcher Test Suite', () => {
         expect(unitTestEventDispatcher.getAll(key)).toStrictEqual(functionSet)
     })
 
-    it('should try to get an unknown component name and throw error', () => {
+    it('should try to get an unknown event name and throw error', () => {
         const key = generateKey()
-        expect(unitTestEventDispatcher.getOne(key)).toThrow(unitTestEventDispatcher.ComponentNotFoundError)
-        expect(unitTestEventDispatcher.getAll(key)).toThrow(unitTestEventDispatcher.ComponentNotFoundError)
+        expect(unitTestEventDispatcher.getOne(key)).toThrow(unitTestEventDispatcher.EventNotFoundError)
+        expect(unitTestEventDispatcher.getAll(key)).toThrow(unitTestEventDispatcher.EventNotFoundError)
     })
 
     it('should emit function set and run them', () => {
@@ -60,28 +60,28 @@ describe('EventDispatcher Test Suite', () => {
         expect(unitTestEventDispatcher.runAll(key, [['One'], ['Two']])).toStrictEqual(['@fOne', '@gTwo'])
     })
 
-    it('should clear the _componentEventMap', () => {
+    it('should clear the _eventMap', () => {
         const key = generateKey()
         const f = () => 'I will be erased soon.'
         unitTestEventDispatcher.dispatch(key, f)
         unitTestEventDispatcher.clear()
-        expect(unitTestEventDispatcher.getOne(key)).toThrow(unitTestEventDispatcher.ComponentNotFoundError)
+        expect(unitTestEventDispatcher.getOne(key)).toThrow(unitTestEventDispatcher.EventNotFoundError)
     })
 
-    it('should remove the key from the _componentEventMap', () => {
+    it('should remove the key from the _eventMap', () => {
         const key = generateKey()
         const f = () => 'This shan\'t be invoked.'
         unitTestEventDispatcher.dispatch(key, f)
-        unitTestEventDispatcher.deleteComponent(key)
-        expect(unitTestEventDispatcher.getOne(key)).toThrow(unitTestEventDispatcher.ComponentNotFoundError)
+        unitTestEventDispatcher.deleteEvent(key)
+        expect(unitTestEventDispatcher.getOne(key)).toThrow(unitTestEventDispatcher.EventNotFoundError)
     })
 
-    it('should remove an unknown key from the _componentEventMap and throw error', () => {
+    it('should remove an unknown key from the _eventMap and throw error', () => {
         const key = generateKey()
-        expect(unitTestEventDispatcher.deleteComponent(key)).toThrow(unitTestEventDispatcher.ComponentNotFoundError)
+        expect(unitTestEventDispatcher.deleteEvent(key)).toThrow(unitTestEventDispatcher.EventNotFoundError)
     })
 
-    it('should print _componentEventMap as a visual tree', () => {
+    it('should print _eventMap as a visual tree', () => {
         const k1 = generateKey()
         const k2 = generateKey()
         const f1 = () => '@f1'
